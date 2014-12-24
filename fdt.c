@@ -1446,8 +1446,10 @@ int rotate (int N, double *real_p, double *real_p_rotate, double *ima_p, double 
 		sina=ima_p[i]/amp;
 
 		// rotate profile
-		real_p_rotate[i]=amp*(cosina*cos(-i*rot*M_PI)-sina*sin(-i*rot*M_PI));
-		ima_p_rotate[i]=amp*(sina*cos(-i*rot*M_PI)+cosina*sin(-i*rot*M_PI));
+		real_p_rotate[i]=amp*(cosina*cos(-i*rot)-sina*sin(-i*rot));
+		ima_p_rotate[i]=amp*(sina*cos(-i*rot)+cosina*sin(-i*rot));
+		//real_p_rotate[i]=amp*(cosina*cos(-i*rot*M_PI)-sina*sin(-i*rot*M_PI));
+		//ima_p_rotate[i]=amp*(sina*cos(-i*rot*M_PI)+cosina*sin(-i*rot*M_PI));
 		//real_p_rotate[i]=amp*(cosina*cos(-i*M_PI)-sina*sin(-i*M_PI));
 		//ima_p_rotate[i]=amp*(sina*cos(-i*M_PI)+cosina*sin(-i*M_PI));
 		
@@ -1602,6 +1604,7 @@ int deallocateMemory (params *param, int nchn)
 int deDM (int nphase, int npol, double *in, double phaseShift, double *out)
 // de-disperse 
 {
+	//printf ("npol: %d\n", npol);
 	int i, j;
 	
 	double I_in[nphase], Q_in[nphase], U_in[nphase], V_in[nphase];
@@ -1638,24 +1641,35 @@ int deDM (int nphase, int npol, double *in, double phaseShift, double *out)
 	double Q_in_real[nphase/2+1], Q_in_ima[nphase/2+1];
 	double U_in_real[nphase/2+1], U_in_ima[nphase/2+1];
 	double V_in_real[nphase/2+1], V_in_ima[nphase/2+1];
-  preA7_QUV (I_in, nphase, I_in_real, I_in_ima);
-  preA7_QUV (Q_in, nphase, Q_in_real, Q_in_ima);
-  preA7_QUV (U_in, nphase, U_in_real, U_in_ima);
-  preA7_QUV (V_in, nphase, V_in_real, V_in_ima);
+
+	preA7_QUV (I_in, nphase, I_in_real, I_in_ima);
+
+	if (npol == 4)
+	{
+		preA7_QUV (Q_in, nphase, Q_in_real, Q_in_ima);
+  	preA7_QUV (U_in, nphase, U_in_real, U_in_ima);
+  	preA7_QUV (V_in, nphase, V_in_real, V_in_ima);
+	}
 
 	double I_out_real[nphase/2+1], I_out_ima[nphase/2+1];
 	double Q_out_real[nphase/2+1], Q_out_ima[nphase/2+1];
 	double U_out_real[nphase/2+1], U_out_ima[nphase/2+1];
 	double V_out_real[nphase/2+1], V_out_ima[nphase/2+1];
 	rotate (nphase, I_in_real, I_out_real, I_in_ima, I_out_ima, phaseShift);
-	rotate (nphase, Q_in_real, Q_out_real, Q_in_ima, Q_out_ima, phaseShift);
-	rotate (nphase, U_in_real, U_out_real, U_in_ima, U_out_ima, phaseShift);
-	rotate (nphase, V_in_real, V_out_real, V_in_ima, V_out_ima, phaseShift);
+	if (npol == 4)
+	{
+		rotate (nphase, Q_in_real, Q_out_real, Q_in_ima, Q_out_ima, phaseShift);
+		rotate (nphase, U_in_real, U_out_real, U_in_ima, U_out_ima, phaseShift);
+		rotate (nphase, V_in_real, V_out_real, V_in_ima, V_out_ima, phaseShift);
+	}
 
 	inverse_dft (I_out_real, I_out_ima, nphase, I_out);
-	inverse_dft (Q_out_real, Q_out_ima, nphase, Q_out);
-	inverse_dft (U_out_real, U_out_ima, nphase, U_out);
-	inverse_dft (V_out_real, V_out_ima, nphase, V_out);
+	if (npol == 4)
+	{
+		inverse_dft (Q_out_real, Q_out_ima, nphase, Q_out);
+		inverse_dft (U_out_real, U_out_ima, nphase, U_out);
+		inverse_dft (V_out_real, V_out_ima, nphase, V_out);
+	}
 
 	for (i = 0; i < npol; i++)
 	{
@@ -1663,19 +1677,20 @@ int deDM (int nphase, int npol, double *in, double phaseShift, double *out)
 		{
 			if (i == 0)
 			{
-				in[i*nphase+j] = I_out[j];
+				out[i*nphase+j] = I_out[j];
+				//printf ("%d %lf %lf\n", j, I_in[j], I_out[j]);
 			}
 			else if (i == 1)
 			{
-				in[i*nphase+j] = Q_out[j];
+				out[i*nphase+j] = Q_out[j];
 			}
 			else if (i == 2)
 			{
-				in[i*nphase+j] = U_out[j];
+				out[i*nphase+j] = U_out[j];
 			}
 			else if (i == 3)
 			{
-				in[i*nphase+j] = V_out[j];
+				out[i*nphase+j] = V_out[j];
 			}
 			else
 			{

@@ -144,4 +144,5 @@ int errInvCov (double c00, double c11, double c01, double *err0, double *err1);
 int deDM (int nphase, int npol, double *in, double phaseShift, double *out);
 int write_prof (char *name, int subint, double *profile, int nphase);
 double phaseShiftDM (double dm, double freq, double freqRef, double psrFreq);
+int modify_freq ( char *name, int subint, double freqRef, int nchan);
 

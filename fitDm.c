@@ -589,9 +589,14 @@ int errInvCov (double c00, double c11, double c01, double *err0, double *err1)
 
 double phaseShiftDM (double dm, double freq, double freqRef, double psrFreq)
 {
+	double phase;
 	double phaseShift;
 		
-	phaseShift = (2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	//phase = (2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	//phaseShift = phase - floor(phase);
+	//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	phaseShift = -(2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	//printf ("%lf %lf\n", freq, phaseShift);
 	
 	return phaseShift;
 }

@@ -131,6 +131,7 @@ int main (int argc, char *argv[])
 					for (j = 0; j < nphase; j++)
 					{
 						p_temp[n] = p_multi[nstokes*nchn*nphase + i*nphase + j];
+						//printf ("%d %lf\n", n, p_temp[n]);
 						n++;
 					}
 				}
@@ -145,11 +146,13 @@ int main (int argc, char *argv[])
 					for (j = 0; j < nphase; j++)
 					{
 						p_multi_deDM[nstokes*nchn*nphase + i*nphase + j] = p_temp_deDM[j];
+						//printf ("%d %lf\n", j, p_temp_deDM[j]);
 						n++;
 					}
 				}
 			}
 			write_prof (name_data, h, p_multi_deDM, nphase);
+			modify_freq (name_data, h, freqRef, nchn);
 		}
 
 		free(p_multi);
