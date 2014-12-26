@@ -1042,8 +1042,7 @@ int write_prof (char *name, int subint, double *profile, int nphase)
   int felem;
   int nelem;
   int null;
-  int anynull;
-  //double *profile;     // the array to store the profile   
+  //int anynull;
 
 	nbin = nphase;
   //profile = ( double *)malloc( (nchan*npol*nbin) * sizeof( double ) );               // allocate space for column value
@@ -1052,10 +1051,7 @@ int write_prof (char *name, int subint, double *profile, int nphase)
   nelem = nbin*nchan*npol;
   //nelem = 1024;
   null = 0;
-  anynull = 0;
-
-	double prof[nbin*nchan*npol];
-  fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, prof, &anynull, &status);           // read the column
+  //anynull = 0;
 
 	//int i;
 	//for (i = 0; i < nbin*nchan*npol; i++)
