@@ -7,6 +7,8 @@
 #include <fftw3.h>
 #include "fitsio.h"
 //#include "ptime.h"
+#include "tempo2pred.h"
+#include "tempo2pred_int.h"
 #include <gsl/gsl_multimin.h>
 
 #define NP 2048
@@ -122,8 +124,8 @@ int align (int N, double phase, double b, double a, double *real_p, double *real
 
 int inverse_dft (double *real_p, double *ima_p, int ncount, double *p_new);
 
-int allocateMemory (params *param, int nchn, int nphase);
-int deallocateMemory (params *param, int nchn);
+int allocateMemoryPtime (params *param, int nchn, int nphase);
+int deallocateMemoryPtime (params *param, int nchn);
 
 double chiSquare (const gsl_vector *x, void *param);
 
@@ -146,3 +148,8 @@ int write_prof (char *name, int subint, double *profile, int nphase);
 double phaseShiftDM (double dm, double freq, double freqRef, double psrFreq);
 int modify_freq ( char *name, int subint, double freqRef, int nchan);
 
+int T2Predictor_ReadFits(T2Predictor *t2p, char *fname);
+int T2Predictor_FReadFits(T2Predictor *t2p, fitsfile *f);
+int ChebyModelSet_ReadFits(ChebyModelSet *cms, fitsfile *f);
+int ChebyModel_ReadFits(ChebyModel *cm, fitsfile *f, int *row0);
+int createNewfile (char *input, char *output, char *ext);

@@ -14,21 +14,13 @@ int main (int argc, char *argv[])
 {
 	int h,i,j,k;
 
-	/*
-	if (argc != 8)
-	{
-		printf ("Usage: ptime_time -f fname -std tname (-pt tname) -o oname -single (-multi)\n"
-	            "Derive the TOAs\n"
-	            "fname: data file; tname: templates; oname: output .tim; -std: standard template format; -pt: ptime template;\n"
-				"-single: do freq-dependent matching and get one TOA; -multi: do freq-dependent matching and get TOAs for each channel.\n");
-	    exit (0);
-	}
-	*/
-
-
 	//////////////////////////////////////////////////////
+	char inName[128];   // name of input data file
 	char fname[128];   // name of data file
+	char ext[128];   // extension of new data file
+	char ext0[]="D";   // default extension of new data file
 	int nstokes;
+	int mode = 0;  // default: creat new file ".D"
 
 	int index, n;
 	for (i=0;i<argc;i++)
@@ -37,64 +29,78 @@ int main (int argc, char *argv[])
 		{
             index = i + 1;
 			n = 0;
-			while ( (index + n) < argc && strcmp(argv[index+n],"-std") != 0 && strcmp(argv[index+n],"-pt") != 0 && strcmp(argv[index+n],"-o") != 0 && strcmp(argv[index+n],"-single") != 0)
+			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 )
 			{
 				n++;
-		    }
+			}
 			//strcpy(fname,argv[++i]);
+		}
+		else if (strcmp(argv[i],"-e") == 0)
+		{
+			strcpy(ext,argv[++i]);
+			mode = 1;  // creat new file
 		}
 	}
 
-	// name of different extension of data files
-	char name_data[50]; 
-	char name_predict[50]; 
-	char name_psrparam[50]; 
-
-	char data[] = "[SUBINT]";
-	char predict[] = "[T2PREDICT]";
-	char psrparam[] = "[PSRPARAM]";
+	T2Predictor pred;
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// start to deal with different data file
 	for (k = index; k < index + n; k++)
 	{
 		// get the data file name
-		strcpy(fname,argv[k]);
-		printf ("%s\n", fname);
-
-		// name of different extension
-		strcpy(name_data,fname);
-		strcpy(name_predict,fname);
-		strcpy(name_psrparam,fname);
-
-		strcat(name_data, data);
-		strcat(name_predict, predict);
-		strcat(name_psrparam, psrparam);
+		if (mode == 0)
+		{
+			strcpy(inName,argv[k]);
+			createNewfile(inName, fname, ext0);
+			printf ("%s\n", fname);
+		}
+		else
+		{
+			strcpy(inName,argv[k]);
+			createNewfile(inName, fname, ext);
+			printf ("%s\n", fname);
+		}
 
 		////////////////////////////////////////////////////
 	
-		double psrfreq;
-		psrfreq = read_psrfreq(name_psrparam);
-		//printf ("psrfreq: %.15lf\n", psrfreq);
-	
 		double freqRef;
-		freqRef = read_obsFreq (name_data);
+		freqRef = read_obsFreq (fname);
 		//freqRef = 1369.0; // MHz
 
 		double dm;
-		dm = readDm(name_data);
+		dm = readDm(fname);
 		printf ("DM0: %.4lf\n", dm);
 	
+		T2Predictor_Init(&pred);
+		T2Predictor_ReadFits(&pred, fname);
+		//T2Predictor_Read(&pred,(char *)"t2pred.dat");
+
+		long int imjd, smjd;
+		double offs, mjd;
+		imjd = stt_imjd(fname);
+		smjd = stt_smjd(fname);
+		offs = stt_offs(fname);
+
+		mjd = imjd + (smjd + offs)/86400.0L;
+		//printf ("%lf %lf\n", mjd, freqRef);
+		
+		double psrfreq;
+		//psrfreq = read_psrfreq(fname);
+		//printf ("psrfreq: %.15lf\n", psrfreq);
+		psrfreq = T2Predictor_GetFrequency(&pred,mjd,freqRef);
+		printf ("Predicted period: %.10lf\n", 1.0/psrfreq);
+
 		////////////////////////////////////////////////
 		int nphase;
 		int nchn;
 		int nsub;
 		int npol;
 	
-		nchn = get_nchan(name_data);	
-		npol = get_npol(name_data);	
-		nsub = get_subint(name_data);	
-		nphase = get_nphase(name_data);	
+		nchn = get_nchan(fname);	
+		npol = get_npol(fname);	
+		nsub = get_subint(fname);	
+		nphase = get_nphase(fname);	
 
 		//printf ("%d\n", nchn);
 		////////////////////////////////////////////////
@@ -117,8 +123,8 @@ int main (int argc, char *argv[])
 		for (h = 1; h <= nsub; h++)
 		{
 			// read profiles from data file
-			read_prof(name_data,h,p_multi,nphase);
-			read_freq(name_data,h,freq,nchn);
+			read_prof(fname,h,p_multi,nphase);
+			read_freq(fname,h,freq,nchn);
 
 			//readfile(argv[2],&n,tt,p_multi);
 
@@ -151,8 +157,8 @@ int main (int argc, char *argv[])
 					}
 				}
 			}
-			write_prof (name_data, h, p_multi_deDM, nphase);
-			modify_freq (name_data, h, freqRef, nchn);
+			write_prof (fname, h, p_multi_deDM, nphase);
+			modify_freq (fname, h, freqRef, nchn);
 		}
 
 		free(p_multi);

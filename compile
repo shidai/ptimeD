@@ -1,1 +1,1 @@
-gcc -o ptimeD fitDm.c fdt.c ptimeD.c readfits.c T2toolkit.c tempo2pred.c cheby2d.c t1polyco.c -L../cfitsio/lib -I../cfitsio/include/ -lcfitsio -L/psr/dist/x86_64_lenny/lib/ -I/psr/dist/x86_64_lenny/include/ -lgsl -lgslcblas -lfftw3 
+gcc -o ptimeD fitDm.c fdt.c ptimeD.c readfits.c readPred.c T2toolkit.c tempo2pred.c cheby2d.c t1polyco.c -L../cfitsio/lib -I../cfitsio/include/ -lcfitsio -L/psr/dist/x86_64_lenny/lib/ -I/psr/dist/x86_64_lenny/include/ -lgsl -lgslcblas -lfftw3 

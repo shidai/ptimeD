@@ -631,7 +631,10 @@ int ChebyModelSet_Read(ChebyModelSet *cms, FILE *f)
   //printf("Got here e %d\n",cms->nsegments);
   for (iseg=0; iseg < cms->nsegments ; iseg++)
     if ((ret=ChebyModel_Read(&cms->segments[iseg], f)) != 0)
+		{
+			//printf("set %d\n", ret);
       return ret;
+		}
   //printf("Got here f\n");
   return 0;
 }

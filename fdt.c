@@ -497,7 +497,7 @@ int get_toa (double *s, double *p, double *phasex, double *errphasex, double psr
 	//double amp_s[nchn][nphase/2],amp_p[nchn][nphase/2];  // elements for calculating A7
 	//double phi_s[nchn][nphase/2],phi_p[nchn][nphase/2];
 	params param;
-	allocateMemory (&param, nchn, nphase);
+	allocateMemoryPtime (&param, nchn, nphase);
 	//double amp_s[nchn][NP],amp_p[nchn][NP];  // elements for calculating A7
 	//double phi_s[nchn][NP],phi_p[nchn][NP];  // the second dim should be NP, which is large enough for different observations
 
@@ -583,7 +583,7 @@ int get_toa (double *s, double *p, double *phasex, double *errphasex, double psr
 	// calculate the rms
 	cal_rms(phase,b,rms, param);
 
-	deallocateMemory (&param, nchn);
+	deallocateMemoryPtime (&param, nchn);
 	return 0;
 }
 
@@ -611,7 +611,7 @@ int get_toa_multi (char *name_data, char *name_predict, int h, double *s, double
 	int k;  // k=nphase/2
 
 	params param;
-	allocateMemory (&param, nchn, nphase);
+	allocateMemoryPtime (&param, nchn, nphase);
 	param.rms = rms;
 
 	preA7(s, p, nphase, nchn, &param);
@@ -688,7 +688,7 @@ int get_toa_multi (char *name_data, char *name_predict, int h, double *s, double
 	(*phasex) = phase;
 	(*errphasex) = errphase;
 
-	deallocateMemory (&param, nchn);
+	deallocateMemoryPtime (&param, nchn);
 
 	return 0;
 }
@@ -718,7 +718,7 @@ int getToaMultiDM (char *name_data, char *name_predict, int h, double *s, double
 	int k;  // k=nphase/2
 
 	params param;
-	allocateMemory (&param, nchn, nphase);
+	allocateMemoryPtime (&param, nchn, nphase);
 	param.nfreq = freq;
 	param.rms = rms;
 	param.psrFreq = psrfreq;
@@ -793,7 +793,7 @@ int getToaMultiDM (char *name_data, char *name_predict, int h, double *s, double
 	(*phasex) = phase;
 	(*errphasex) = errphase;
 
-	deallocateMemory (&param, nchn);
+	deallocateMemoryPtime (&param, nchn);
 
 	return 0;
 }
@@ -1566,7 +1566,7 @@ int inverse_dft (double *real_p, double *ima_p, int ncount, double *p_new)
 	return 0;
 }
 
-int allocateMemory (params *param, int nchn, int nphase)
+int allocateMemoryPtime (params *param, int nchn, int nphase)
 {
 	param->a_s = (double **)malloc(sizeof(double *)*nchn);
 	param->a_p = (double **)malloc(sizeof(double *)*nchn);
@@ -1584,7 +1584,7 @@ int allocateMemory (params *param, int nchn, int nphase)
 	}
 }
 
-int deallocateMemory (params *param, int nchn)
+int deallocateMemoryPtime (params *param, int nchn)
 {
 	int i;
 	for (i = 0; i < nchn; i++)

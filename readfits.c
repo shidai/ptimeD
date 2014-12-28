@@ -99,161 +99,161 @@ double stt_offs ( char *name )
 
 int get_nchan ( char *name )
 {  
-//double *read_arrival_time( char *input, long *nrows )
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+      printf( "error while openning file\n" );
+  }
+	
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
 
 	int nchan;
-    if ( fits_read_key(fptr, TINT, (char *)"NCHAN", &nchan, NULL, &status) )           // get the row number
-    {
+  if ( fits_read_key(fptr, TINT, (char *)"NCHAN", &nchan, NULL, &status) )           // get the row number
+	{
         printf( "error while getting the npol number\n" );
 		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
 	}
     //printf ("number of nchan: %d\n", nchan);
 	///////////////////////////////////////////////////////////////////////////
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file " );
-    }
+  if ( fits_close_file(fptr, &status) )
+  {
+      printf( " error while closing the file " );
+  }
 
-    return nchan;
+  return nchan;
 }
 
 int get_npol ( char *name )
 {  
-//double *read_arrival_time( char *input, long *nrows )
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+      printf( "error while openning file\n" );
+  }
 
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
 	//////////////////////////////////////////////////////////////////////////
 	int npol;
-    if ( fits_read_key(fptr, TINT, (char *)"NPOL", &npol, NULL, &status) )           // get the row number
-    {
-        printf( "error while getting the npol number\n" );
+	if ( fits_read_key(fptr, TINT, (char *)"NPOL", &npol, NULL, &status) )           // get the row number
+	{
+		printf( "error while getting the npol number\n" );
 		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
 	}
-    //printf ("number of npol: %d\n", npol);
 
 	///////////////////////////////////////////////////////////////////////////
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file " );
-    }
+  if ( fits_close_file(fptr, &status) )
+  {
+      printf( " error while closing the file " );
+  }
 
-    return npol;
+  return npol;
 }
 
 int get_nphase ( char *name )
 {  
-//double *read_arrival_time( char *input, long *nrows )
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+      printf( "error while openning file\n" );
+  }
 
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
 	//////////////////////////////////////////////////////////////////////////
 	int nbin;
-    if ( fits_read_key(fptr, TINT, (char *)"NBIN", &nbin, NULL, &status) )           // get the row number
-    {
-        printf( "error while getting the nbin number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	if ( fits_read_key(fptr, TINT, (char *)"NBIN", &nbin, NULL, &status) )           // get the row number
+	{
+		printf( "error while getting the nbin number\n" );
 	}
     //printf ("number of nbin: %d\n", nbin);
 
 	///////////////////////////////////////////////////////////////////////////
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file " );
-    }
+  if ( fits_close_file(fptr, &status) )
+  {
+      printf( " error while closing the file " );
+  }
 
-    return nbin;
+  return nbin;
 }
 
 int get_subint ( char *name )
 {  
-//double *read_arrival_time( char *input, long *nrows )
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    long int nrows;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  long int nrows;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+      printf( "error while openning file\n" );
+  }
 
-    if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
-    {
-        printf( "error while getting the row number\n" );
-    }
-    //printf ("number of subint: %ld\n", nrows);
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+
+  if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
+  {
+		printf( "error while getting the row number\n" );
+  }
+  //printf ("number of subint: %ld\n", nrows);
     
 	///////////////////////////////////////////////////////////////////////////
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file " );
-    }
+  if ( fits_close_file(fptr, &status) )
+  {
+		printf( " error while closing the file " );
+  }
 
-    return nrows;
+  return nrows;
 }
 
 int print_t2pred ( char *name )
 {  
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    int colnum;
-    long int nrows;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  int colnum;
+  long int nrows;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+		printf( "error while openning file\n" );
+  }
 
-    if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
-    {
-        printf( "error while getting the row number\n" );
-    }
-    //printf ("%ld\n", nrows);
-    
-    //if ( fits_get_colnum(fptr, CASEINSEN, "TSUBINT", &colnum, &status) )           // get the row number
-    if ( fits_get_colnum(fptr, CASEINSEN, "PREDICT", &colnum, &status) )           // get the row number
-    {
-        printf( "error while getting the colnum number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"T2PREDICT",0,&status);
+
+  if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
+  {
+		printf( "error while getting the row number\n" );
+  }
+  //printf ("%ld\n", nrows);
+  
+  //if ( fits_get_colnum(fptr, CASEINSEN, "TSUBINT", &colnum, &status) )           // get the row number
+  if ( fits_get_colnum(fptr, CASEINSEN, "PREDICT", &colnum, &status) )           // get the row number
+  {
+		printf( "error while getting the colnum number\n" );
 	}
-    //printf ("%d\n", colnum);
 
-    int frow;
-    int	felem = 1;
-    int nelem = 1;
-    int	anynull = 0;
-    char nval[]="NULL";
+  int frow;
+  int	felem = 1;
+  int nelem = 1;
+  int	anynull = 0;
+  char nval[]="NULL";
 
 	char **line;
 	line = (char **)malloc(sizeof(char *));
@@ -270,404 +270,273 @@ int print_t2pred ( char *name )
 	}
 
 	int i;
-    for (i = 1; i <= nrows; i++)                             // print the results
+	for (i = 1; i <= nrows; i++)                             // print the results
 	{
 		frow = i;
 
 		fits_read_col(fptr, TSTRING, colnum, frow, felem, nelem, nval, line, &anynull, &status);           // read the column
-	//fits_read_col_str(fptr,colnum,frow,felem,nelem,nval,line,&anynull,&status);
+		//fits_read_col_str(fptr,colnum,frow,felem,nelem,nval,line,&anynull,&status);
 
-		//puts(line[0]);
-        //printf("%s\n", line[0]);
 		fprintf (fp, "%s\n", line[0]);
 	}
 
-    if (fclose (fp) != 0)
-	    fprintf (stderr, "Error closing\n");
+  if (fclose (fp) != 0)
+	  fprintf (stderr, "Error closing\n");
 
+  if ( fits_close_file(fptr, &status) )
+  {
+      printf( " error while closing the file \n" );
+  }
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file \n" );
-    }
-
-    return 0;
+	return 0;
 }
 
 int read_freq ( char *name, int subint, double *freq, int nchan)
-//int main (int argc, char *argv[] )
 {  
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    int colnum;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  int colnum;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+		printf( "error while openning file\n" );
+  }
 
-    if ( fits_get_colnum(fptr, CASEINSEN, "DAT_FREQ", &colnum, &status) )           // get the colnum number
-    {
-        printf( "error while getting the colnum number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+
+  if ( fits_get_colnum(fptr, CASEINSEN, "DAT_FREQ", &colnum, &status) )           // get the colnum number
+  {
+		printf( "error while getting the colnum number\n" );
 	}
-    //printf ("%d\n", colnum);
 
-    int frow;
-    int	felem = 1;
-    int nelem = nchan;
-    int null = 0;
-    int	anynull = 0;
+  int frow;
+  int	felem = 1;
+  int nelem = nchan;
+  int null = 0;
+  int	anynull = 0;
 
 	//int subint = 1;
 	//int nchan = 8;
 	//double freq[nchan];
 	frow = subint;
 
-    fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, freq, &anynull, &status);           // read the column
+	fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, freq, &anynull, &status);           // read the column
 
-	//int i;
-    //for (i = 0; i < nchan; i++)                             // print the results
-	//{
-		//puts(line[0]);
-    //    printf("%lf\n", freq[i]);
-		//fprintf (fp, "%s\n", line[0]);
-	//}
+  if ( fits_close_file(fptr, &status) )
+  {
+		printf( " error while closing the file \n" );
+  }
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file \n" );
-    }
-
-    return 0;
+  return 0;
 }
 
 int read_wts ( char *name, int subint, double *wts, int nchan)
 //int main (int argc, char *argv[] )
 {  
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    int colnum;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  int colnum;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
+  {
+      printf( "error while openning file\n" );
+  }
 
-    if ( fits_get_colnum(fptr, CASEINSEN, "DAT_WTS", &colnum, &status) )           // get the colnum number
-    {
-        printf( "error while getting the colnum number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+
+  if ( fits_get_colnum(fptr, CASEINSEN, "DAT_WTS", &colnum, &status) )           // get the colnum number
+  {
+		printf( "error while getting the colnum number\n" );
 	}
     //printf ("%d\n", colnum);
 
-    int frow;
-    int	felem = 1;
-    int nelem = nchan;
-    int null = 0;
-    int	anynull = 0;
+  int frow;
+  int	felem = 1;
+  int nelem = nchan;
+  int null = 0;
+  int	anynull = 0;
 
 	//int subint = 1;
 	//int nchan = 8;
 	//double wts[nchan];
 	frow = subint;
 
-    fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, wts, &anynull, &status);           // read the column
+	fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, wts, &anynull, &status);           // read the column
 
-	//int i;
-    //for (i = 0; i < nchan; i++)                             // print the results
-	//{
-		//puts(line[0]);
-    //    printf("%lf\n", wts[i]);
-		//fprintf (fp, "%s\n", line[0]);
-	//}
+  if ( fits_close_file(fptr, &status) )
+  {
+      printf( " error while closing the file \n" );
+  }
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file \n" );
-    }
-
-    return 0;
+  return 0;
 }
 
 double read_offs ( char *name, int subint)
 //int main (int argc, char *argv[] )
 {  
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    int colnum;
-    long int nrows;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  int colnum;
+  long int nrows;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+		printf( "error while openning file\n" );
+  }
 
-    if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
-    {
-        printf( "error while getting the row number\n" );
-    }
-    //printf ("%ld\n", nrows);
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
     
-    if ( fits_get_colnum(fptr, CASEINSEN, "OFFS_SUB", &colnum, &status) )           // get the colnum number
-    {
-        printf( "error while getting the colnum number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
+  {
+      printf( "error while getting the row number\n" );
+  }
+    
+  if ( fits_get_colnum(fptr, CASEINSEN, "OFFS_SUB", &colnum, &status) )           // get the colnum number
+  {
+      printf( "error while getting the colnum number\n" );
 	}
-    //printf ("%d\n", colnum);
 
-    int frow;
-    int	felem = 1;
-    int nelem = 1;
-    int null = 0;
-    int	anynull = 0;
+  int frow;
+  int	felem = 1;
+  int nelem = 1;
+  int null = 0;
+  int	anynull = 0;
 
-    double offs;
+  double offs;
 
-	//int i;
-    //for (i = 1; i <= nrows; i++)                             // print the results
-	//{
-		frow = subint;
+	frow = subint;
 
-        fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, &offs, &anynull, &status);           // read the column
+	fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, &offs, &anynull, &status);           // read the column
 
-		//puts(line[0]);
-        //printf("subint offset is %Lf\n", offs);
-		//fprintf (fp, "%s\n", line[0]);
-	//}
+  if ( fits_close_file(fptr, &status) )
+  {
+		printf( " error while closing the file \n" );
+  }
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file \n" );
-    }
-
-    return offs;
+  return offs;
 }
 
 //int main ( int argc, char *argv[] )
 int read_prof ( char *name, int subint, double *profile, int nphase)
 {  
-//double *read_arrival_time( char *input, long *nrows )
-    //int subint = 1;
-	//double profile[8*1024];
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    int colnum;
-    long int nrows;
-
-    status = 0;
-
-    //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
-
-    if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
-    {
-        printf( "error while getting the row number\n" );
-    }
-    //printf ("%ld\n", nrows);
-    
-    //if ( fits_get_colnum(fptr, CASEINSEN, "TSUBINT", &colnum, &status) )           // get the row number
-    if ( fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status) )           // get the row number
-    {
-        printf( "error while getting the colnum number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
-	}
-    //printf ("%d\n", colnum);
-
-	//////////////////////////////////////////////////////////////////////////
-	int npol;
-    if ( fits_read_key(fptr, TINT, (char *)"NPOL", &npol, NULL, &status) )           // get the row number
-    {
-        printf( "error while getting the npol number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
-	}
-    //printf ("%d\n", npol);
-
-	int nchan;
-    if ( fits_read_key(fptr, TINT, (char *)"NCHAN", &nchan, NULL, &status) )           // get the row number
-    {
-        printf( "error while getting the npol number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
-	}
-    //printf ("%d\n", nchan);
-	///////////////////////////////////////////////////////////////////////////
-
-	int nbin;
-    int frow;
-    int felem;
-    int nelem;
-    int null;
-    int anynull;
-    //double *profile;     // the array to store the profile   
-
-	nbin = nphase;
-    //profile = ( double *)malloc( (nchan*npol*nbin) * sizeof( double ) );               // allocate space for column value
-    frow = subint;
-    felem = 1;
-    nelem = nbin*nchan*npol;
-    //nelem = 1024;
-    null = 0;
-    anynull = 0;
-
-    fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, profile, &anynull, &status);           // read the column
-
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file " );
-    }
-
-    return 0;
-}
-
-double readDm ( char *name )
-{  
-//double *read_arrival_time( char *input, long *nrows )
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-
-    status = 0;
-
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
-
-	//////////////////////////////////////////////////////////////////////////
-	double dm;
-    if ( fits_read_key(fptr, TDOUBLE, (char *)"DM", &dm, NULL, &status) )           // get the row number
-    {
-        printf( "error while getting the npol number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
-	}
-    //printf ("number of npol: %d\n", npol);
-
-	///////////////////////////////////////////////////////////////////////////
-
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file " );
-    }
-
-    return dm;
-}
-
-/*
-double readDm ( char *name )
-{
-	fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
   int status;
+  int colnum;
+  long int nrows;
 
   status = 0;
 
   //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
   if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
   {
-      printf( "error while openning file\n" );
+		printf( "error while openning file\n" );
   }
 
-	//////////////////////////////////////////////////////////////////////////
-	
-	char freq[100];
-	char F0[100];
-
-	int colnum = 1;
-  int frow;
-  //int frow = 7;
-  int	felem = 1;
-  int nelem = 1;
-  int	anynull = 0;
-  char nval[]="NULL";
-
-	char **line;
-	line = (char **)malloc(sizeof(char *));
-	line[0] = (char *)malloc(sizeof(char)*1024);
-
-	double a[10];
-	for (frow = 1; frow < 20; frow++)
-	{
-		fits_read_col(fptr, TSTRING, colnum, frow, felem, nelem, nval, line, &anynull, &status);           // read the column
-
-		//puts(line[0]);
-
-		int nchar = strlen(line[0]);
-		//printf("strlen %d\n", nchar);
-
-		int i;
-		for (i = 0; i < nchar; i++)
-		{
-			F0[i] = line[0][i];
-		}
-		//printf("F0 %s\n", F0);
-
-		if (F0[0] == 'D' && F0[1] == 'M' && F0[2] != 'E')
-		//if (F0[0] == 'D' && F0[1] == 'M' && F0[2] == ' ')
-		{
-			int l = 0;
-			int j = 0;
-			for (i = 0; i < nchar; i++)
-			{
-				if( (F0[i] >= '0' && F0[i] <= '9') || F0[i] =='.' ) 
-				{ 
-					freq[l] = F0[i];
-					l++;
-				}
-				else if(l > 0)
-				{
-					freq[l] = '\0';
-					a[j]=atof(freq);
-					j++;
-					l=0;
-				}
-			}
-
-			//for(i = 0; i < j; i++)
-			//{
-			//	printf("%.15lf\n", a[i]);
-			//}
- 
-			break;
-		}
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+    
+	if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
+  {
+		printf( "error while getting the row number\n" );
+  }
+    
+  if ( fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status) )           // get the row number
+  {
+		printf( "error while getting the colnum number\n" );
 	}
 
-	double dm;
-	dm = a[0];
+	//////////////////////////////////////////////////////////////////////////
+	int npol;
+  if ( fits_read_key(fptr, TINT, (char *)"NPOL", &npol, NULL, &status) )           // get the row number
+  {
+		printf( "error while getting the npol number\n" );
+	//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	}
+    //printf ("%d\n", npol);
+
+	int nchan;
+   
+	if ( fits_read_key(fptr, TINT, (char *)"NCHAN", &nchan, NULL, &status) )           // get the row number
+	{
+		printf( "error while getting the npol number\n" );
+	}
+	///////////////////////////////////////////////////////////////////////////
+
+	int nbin;
+  int frow;
+  int felem;
+  int nelem;
+  int null;
+  int anynull;
+  //double *profile;     // the array to store the profile   
+
+	nbin = nphase;
+  frow = subint;
+  felem = 1;
+  nelem = nbin*nchan*npol;
+  //nelem = 1024;
+  null = 0;
+  anynull = 0;
+
+	fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, profile, &anynull, &status);           // read the column
 
   if ( fits_close_file(fptr, &status) )
   {
-		printf( " error while closing the file\n " );
+		printf( " error while closing the file " );
   }
 
-	free(line);
-	return dm;
+  return 0;
 }
-*/
 
+double readDm ( char *name )
+{  
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+
+  status = 0;
+
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+		printf( "error while openning file\n" );
+  }
+
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+	//////////////////////////////////////////////////////////////////////////
+	double dm;
+  if ( fits_read_key(fptr, TDOUBLE, (char *)"DM", &dm, NULL, &status) )           // get the row number
+  {
+		printf( "error while getting the npol number\n" );
+	}
+
+	///////////////////////////////////////////////////////////////////////////
+
+  if ( fits_close_file(fptr, &status) )
+  {
+		printf( " error while closing the file " );
+  }
+
+  return dm;
+}
 
 double read_psrfreq ( char *name )
-//int main(int argc, char *argv[])
 {
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
 
-    status = 0;
+  status = 0;
 
-    //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
-    if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+		printf( "error while openning file\n" );
+  }
 
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"PSRPARAM",0,&status);
 	//////////////////////////////////////////////////////////////////////////
 	
 	char freq[100];
@@ -762,6 +631,7 @@ int check_std ( char *name, int subint, int mode, int nchn, int nphase)
 			printf( "error while openning file\n" );
 		}
 
+		fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
 		if ( fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status) )           // get the colnum number
 		{
 			printf( "error while getting the colnum number\n" );
@@ -886,6 +756,7 @@ int read_std ( char *name, int subint, double *profile, int nphase, int mode, in
 			printf( "error while openning file\n" );
 		}
 
+		fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
 		if ( fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status) )           // get the colnum number
 		{
 			printf( "error while getting the colnum number\n" );
@@ -992,49 +863,42 @@ int read_std ( char *name, int subint, double *profile, int nphase, int mode, in
 
 int write_prof (char *name, int subint, double *profile, int nphase)
 {  
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    int colnum;
-    long int nrows;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  int colnum;
+  long int nrows;
 
-    status = 0;
+  status = 0;
 
-    //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
-    if ( fits_open_file(&fptr, name, READWRITE, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READWRITE, &status) )          // open the file
+  {
+		printf( "error while openning file\n" );
+  }
 
-    if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
-    {
-        printf( "error while getting the row number\n" );
-    }
-    //printf ("%ld\n", nrows);
-    
-    //if ( fits_get_colnum(fptr, CASEINSEN, "TSUBINT", &colnum, &status) )           // get the row number
-    if ( fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status) )           // get the row number
-    {
-        printf( "error while getting the colnum number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+  if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
+  {
+		printf( "error while getting the row number\n" );
+  }
+  //printf ("%ld\n", nrows);
+  
+  if ( fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status) )           // get the row number
+  {
+		printf( "error while getting the colnum number\n" );
 	}
-    //printf ("%d\n", colnum);
 
 	//////////////////////////////////////////////////////////////////////////
 	int npol;
-    if ( fits_read_key(fptr, TINT, (char *)"NPOL", &npol, NULL, &status) )           // get the row number
-    {
-        printf( "error while getting the npol number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+  if ( fits_read_key(fptr, TINT, (char *)"NPOL", &npol, NULL, &status) )           // get the row number
+  {
+		printf( "error while getting the npol number\n" );
 	}
-    //printf ("%d\n", npol);
 
 	int nchan;
-    if ( fits_read_key(fptr, TINT, (char *)"NCHAN", &nchan, NULL, &status) )           // get the row number
-    {
-        printf( "error while getting the npol number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	if ( fits_read_key(fptr, TINT, (char *)"NCHAN", &nchan, NULL, &status) )           // get the row number
+  {
+		printf( "error while getting the npol number\n" );
 	}
-    //printf ("%d\n", nchan);
 	///////////////////////////////////////////////////////////////////////////
 
 	int nbin;
@@ -1087,6 +951,8 @@ double read_obsFreq (char *name)
 		printf( "error while openning file\n" );
 	}
  
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+
 	if (fits_movabs_hdu (fptr, 1, NULL, &status))
 	{
 		printf( "error moving hdu\n" );
@@ -1110,30 +976,32 @@ double read_obsFreq (char *name)
 int modify_freq ( char *name, int subint, double freqRef, int nchan)
 //int main (int argc, char *argv[] )
 {  
-    fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
-    int status;
-    int colnum;
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  int colnum;
 
-    status = 0;
+  status = 0;
 
-    if ( fits_open_file(&fptr, name, READWRITE, &status) )          // open the file
-    //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
-    {
-        printf( "error while openning file\n" );
-    }
+  if ( fits_open_file(&fptr, name, READWRITE, &status) )          // open the file
+  //if ( fits_open_file(&fptr, argv[1], READONLY, &status) )          // open the file
+  {
+      printf( "error while openning file\n" );
+  }
 
-    if ( fits_get_colnum(fptr, CASEINSEN, "DAT_FREQ", &colnum, &status) )           // get the colnum number
-    {
-        printf( "error while getting the colnum number\n" );
-		//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+
+  if ( fits_get_colnum(fptr, CASEINSEN, "DAT_FREQ", &colnum, &status) )           // get the colnum number
+  {
+      printf( "error while getting the colnum number\n" );
+	//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
 	}
-    //printf ("%d\n", colnum);
+  //printf ("%d\n", colnum);
 
-    int frow;
-    int	felem = 1;
-    int nelem = nchan;
-    int null = 0;
-    //int	anynull = 0;
+  int frow;
+  int	felem = 1;
+  int nelem = nchan;
+  int null = 0;
+  //int	anynull = 0;
 
 	//int subint = 1;
 	//int nchan = 8;
@@ -1166,4 +1034,53 @@ int modify_freq ( char *name, int subint, double freqRef, int nchan)
     return 0;
 }
 
+int createNewfile (char *input, char *output, char *ext)
+{
+	int i, n;
+	int nchar = strlen(input);
+
+	for (i = 0; i < nchar; i++)
+	{
+		if (input[i] != '.')
+			n = i;
+	}
+
+	char temp[n];
+	for (i = 0; i < n-1; i++)
+	{
+		temp[i] = input[i];
+	}
+
+	//strcat(temp,ext);
+	strcpy(output,temp);
+	strcat(output,ext);
+
+	/////////////////////////////////////////////////////////////////
+  fitsfile *fptrNew, *fptr;       // pointer to the FITS file, defined in fitsio.h 
+	int status = 0;
+
+  if ( fits_create_file(&fptrNew, output, &status) )  // open the file
+	{
+		printf( "error while creating file\n" );
+	}
+
+  if ( fits_open_file(&fptr, input, READONLY, &status) ) // open the file
+	{
+		printf( "error while openning file\n" );
+	}
+
+	fits_copy_file(fptr, fptrNew, 1, 1, 1, &status);
+
+  if ( fits_close_file(fptrNew, &status) )
+  {
+      printf( " error while closing the file \n" );
+  }
+
+  if ( fits_close_file(fptr, &status) )
+  {
+      printf( " error while closing the file \n" );
+  }
+
+	return 0;
+}
 
