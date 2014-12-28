@@ -21,6 +21,7 @@ int main (int argc, char *argv[])
 	char ext0[]="D";   // default extension of new data file
 	int nstokes;
 	int mode = 0;  // default: creat new file ".D"
+	int pmode = 0;  // default: not use predictor
 
 	int index, n;
 	for (i=0;i<argc;i++)
@@ -29,7 +30,7 @@ int main (int argc, char *argv[])
 		{
             index = i + 1;
 			n = 0;
-			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 )
+			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-p") != 0 )
 			{
 				n++;
 			}
@@ -39,6 +40,10 @@ int main (int argc, char *argv[])
 		{
 			strcpy(ext,argv[++i]);
 			mode = 1;  // creat new file
+		}
+		else if (strcmp(argv[i],"-p") == 0)  // using predictor
+		{
+			pmode = 1;  // creat new file
 		}
 	}
 
@@ -86,10 +91,16 @@ int main (int argc, char *argv[])
 		//printf ("%lf %lf\n", mjd, freqRef);
 		
 		double psrfreq;
-		//psrfreq = read_psrfreq(fname);
-		//printf ("psrfreq: %.15lf\n", psrfreq);
-		psrfreq = T2Predictor_GetFrequency(&pred,mjd,freqRef);
-		printf ("Predicted period: %.10lf\n", 1.0/psrfreq);
+		if (pmode == 0)
+		{
+			psrfreq = read_psrfreq(fname);
+			printf ("psrfreq: %.15lf\n", psrfreq);
+		}
+		else
+		{
+			psrfreq = T2Predictor_GetFrequency(&pred,mjd,freqRef);
+			printf ("Predicted period: %.10lf\n", 1.0/psrfreq);
+		}
 
 		////////////////////////////////////////////////
 		int nphase;
