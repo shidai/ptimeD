@@ -951,8 +951,6 @@ double read_obsFreq (char *name)
 		printf( "error while openning file\n" );
 	}
  
-	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
-
 	if (fits_movabs_hdu (fptr, 1, NULL, &status))
 	{
 		printf( "error moving hdu\n" );
@@ -961,6 +959,39 @@ double read_obsFreq (char *name)
 	double obsFreq;
  
 	if ( fits_read_key(fptr, TDOUBLE, (char *)"OBSFREQ", &obsFreq, NULL, &status) )
+	{
+		printf( "error while getting the npol number\n" );
+	}
+	
+	if ( fits_close_file(fptr, &status) )
+	{
+		printf( " error while closing the file \n" );
+	}
+
+	return obsFreq;
+}
+
+double read_obsFreqSSB (char *name)
+{
+	fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+	int status;
+	int colnum;
+
+	status = 0;
+ 
+	if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+	{
+		printf( "error while openning file\n" );
+	}
+ 
+	if (fits_movabs_hdu (fptr, 1, NULL, &status))
+	{
+		printf( "error moving hdu\n" );
+	}
+ 
+	double obsFreq;
+ 
+	if ( fits_read_key(fptr, TDOUBLE, (char *)"OBSFREQ_SSB", &obsFreq, NULL, &status) )
 	{
 		printf( "error while getting the npol number\n" );
 	}

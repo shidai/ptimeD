@@ -28,7 +28,7 @@ int main (int argc, char *argv[])
 	{
 		if (strcmp(argv[i],"-f") == 0)
 		{
-            index = i + 1;
+			index = i + 1;
 			n = 0;
 			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-p") != 0 )
 			{
@@ -69,8 +69,10 @@ int main (int argc, char *argv[])
 
 		////////////////////////////////////////////////////
 	
-		double freqRef;
-		freqRef = read_obsFreq (fname);
+		double freqRef;  // observing central freq at SSB
+		double cfreq;  // observing central freq, e.g., 1369 MHz
+		freqRef = read_obsFreqSSB (fname);
+		cfreq = read_obsFreq (fname);
 		//freqRef = 1369.0; // MHz
 
 		double dm;
@@ -98,7 +100,7 @@ int main (int argc, char *argv[])
 		}
 		else
 		{
-			psrfreq = T2Predictor_GetFrequency(&pred,mjd,freqRef);
+			psrfreq = T2Predictor_GetFrequency(&pred,mjd,cfreq);
 			printf ("Predicted period: %.10lf\n", 1.0/psrfreq);
 		}
 

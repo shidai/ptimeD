@@ -51,6 +51,7 @@ int read_wts ( char *name, int subint, double *wts, int nchan );
 
 double read_psrfreq ( char *name );
 double read_obsFreq (char *name);
+double read_obsFreqSSB (char *name);
 double readDm ( char *name );
 
 int readfile ( char *filename, int *ntxt, double *x, double *y );
