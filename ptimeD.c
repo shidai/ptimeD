@@ -156,7 +156,7 @@ int main (int argc, char *argv[])
 				}
 
 				// dedisperse
-				phaseShift = phaseShiftDM (dm, freq[i], freqRef, psrfreq);
+				phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq);
 				deDM (nphase, npol, p_temp, phaseShift, p_temp_deDM);
 
 				n = 0;

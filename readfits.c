@@ -993,7 +993,9 @@ double read_obsFreqSSB (char *name)
  
 	if ( fits_read_key(fptr, TDOUBLE, (char *)"OBSFREQ_SSB", &obsFreq, NULL, &status) )
 	{
-		printf( "error while getting the npol number\n" );
+		status = 0;
+		fits_read_key(fptr, TDOUBLE, (char *)"OBSFREQ", &obsFreq, NULL, &status);
+		printf( "not using OBSFREQ_SSB\n" );
 	}
 	
 	if ( fits_close_file(fptr, &status) )
