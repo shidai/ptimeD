@@ -84,24 +84,21 @@ int main (int argc, char *argv[])
 		//T2Predictor_Read(&pred,(char *)"t2pred.dat");
 
 		long int imjd, smjd;
-		double offs, mjd;
+		double offs, mjd, subint_offs;
 		imjd = stt_imjd(fname);
 		smjd = stt_smjd(fname);
 		offs = stt_offs(fname);
 
-		mjd = imjd + (smjd + offs)/86400.0L;
-		//printf ("%lf %lf\n", mjd, freqRef);
-		
 		double psrfreq;
 		if (pmode == 0)
 		{
 			psrfreq = read_psrfreq(fname);
-			printf ("psrfreq: %.15lf\n", psrfreq);
+			//printf ("psrfreq: %.15lf\n", psrfreq);
 		}
 		else
 		{
 			psrfreq = T2Predictor_GetFrequency(&pred,mjd,cfreq);
-			printf ("Predicted period: %.10lf\n", 1.0/psrfreq);
+			//printf ("Predicted period: %.10lf\n", 1.0/psrfreq);
 		}
 
 		////////////////////////////////////////////////
@@ -135,6 +132,10 @@ int main (int argc, char *argv[])
 		// start to derive toa from different subint
 		for (h = 1; h <= nsub; h++)
 		{
+			subint_offs = read_offs(fname, h);
+			mjd = imjd + (smjd + offs + subint_offs)/86400.0L;
+			//printf ("mjd: %lf\n", mjd);
+		
 			// read profiles from data file
 			read_prof(fname,h,p_multi,nphase);
 			read_freq(fname,h,freq,nchn);
@@ -171,7 +172,7 @@ int main (int argc, char *argv[])
 				}
 			}
 			write_prof (fname, h, p_multi_deDM, nphase);
-			modify_freq (fname, h, freqRef, nchn);
+			//modify_freq (fname, h, freqRef, nchn);
 		}
 
 		free(p_multi);

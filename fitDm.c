@@ -587,7 +587,7 @@ int errInvCov (double c00, double c11, double c01, double *err0, double *err1)
 	return 0;
 }
 
-double phaseShiftDM (double dm, double freq, T2Predictor pred, long double mjd, double freqRef, double psrFreq)
+double phaseShiftDM (double dm, double freq, T2Predictor pred, double mjd, double freqRef, double psrFreq)
 {
 	double phase;
 	double phaseShift;
@@ -602,7 +602,7 @@ double phaseShiftDM (double dm, double freq, T2Predictor pred, long double mjd, 
 	phase = T2Predictor_GetPhase(&pred, mjd, freq);
 	phaseShift = (2.0*M_PI)*(phase - floor(phase));
 	//phaseShift = -T2Predictor_GetPhase(&pred, mjd, freq);
-	printf ("Predictor: %lf %lf\n", freq, phaseShift);
+	printf ("Predictor: %lf %lf %lf\n", freq, mjd, phase);
 
 	return phaseShift;
 }

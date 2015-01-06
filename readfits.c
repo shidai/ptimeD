@@ -1072,17 +1072,18 @@ int createNewfile (char *input, char *output, char *ext)
 	int i, n;
 	int nchar = strlen(input);
 
-	for (i = 0; i < nchar; i++)
+	for (i = 0; i < nchar-1; i++)
 	{
-		if (input[i] != '.')
+		if (input[i] == '.')
 			n = i;
 	}
 
-	char temp[n];
-	for (i = 0; i < n-1; i++)
+	char temp[n+2];
+	for (i = 0; i < n+1; i++)
 	{
 		temp[i] = input[i];
 	}
+	temp[n+1] = '\0';
 
 	//strcat(temp,ext);
 	strcpy(output,temp);
