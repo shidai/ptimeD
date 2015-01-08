@@ -116,11 +116,18 @@ int dft_profiles (int N, double *in, fftw_complex *out)
 	//printf ("%lf\n", in[0]);
 	//double *in;
 	//fftw_complex *out;
+	int i;
+	double inUse[N];
 	fftw_plan p;
 	
 	//in = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
 	//out = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * N);
-	p = fftw_plan_dft_r2c_1d(N, in, out, FFTW_MEASURE);
+	p = fftw_plan_dft_r2c_1d(N, inUse, out, FFTW_MEASURE);
+
+	for (i = 0; i < N; i++)
+	{
+		inUse[i] = in[i];
+	}
 
 	fftw_execute(p);
 
@@ -808,18 +815,8 @@ int preA7 (double *s, double *p, int nphase, int nchn, params *param)
 	int i,j;
 	
 	/////////////////////////////////////////////////////////////////////////////////
-	double test[nphase];  // initialize the system, don't know why....
 
-	for (i=0;i<nphase;i++)
-	{
-		test[i]=s[i];
-	}
-	fftw_complex *out_t;
-	out_t = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nphase);
-	dft_profiles(nphase,test,out_t);
-	//////////////////////////////////////////////////////////////////////////////
-
-    fftw_complex *out_s;
+	fftw_complex *out_s;
 	fftw_complex *out_p;
 	
 	out_s = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nphase);
@@ -878,7 +875,6 @@ int preA7 (double *s, double *p, int nphase, int nchn, params *param)
 
 	fftw_free(out_s); 
 	fftw_free(out_p); 
-	fftw_free(out_t); 
 
 	return 0;
 }
@@ -1392,16 +1388,6 @@ int preA7_QUV (double *p, int nphase, double *real_p, double *ima_p)
 	int i,j;
 	
 	/////////////////////////////////////////////////////////////////////////////////
-	double test[nphase];  // initialize the system, don't know why....
-
-	for (i=0;i<nphase;i++)
-	{
-		test[i]=p[i];
-	}
-	fftw_complex *out_t;
-	out_t = (fftw_complex*) fftw_malloc(sizeof(fftw_complex) * nphase);
-	dft_profiles(nphase,test,out_t);
-	//////////////////////////////////////////////////////////////////////////////
 
 	fftw_complex *out_p;
 	
@@ -1426,7 +1412,6 @@ int preA7_QUV (double *p, int nphase, double *real_p, double *ima_p)
 	}
 
 	fftw_free(out_p); 
-	fftw_free(out_t); 
 
 	return 0;
 }
