@@ -30,7 +30,7 @@ int main (int argc, char *argv[])
 		{
 			index = i + 1;
 			n = 0;
-			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-p") != 0 )
+			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-np") != 0 )
 			{
 				n++;
 			}
