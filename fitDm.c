@@ -595,7 +595,7 @@ double phaseShiftDM (double dm, double freq, T2Predictor pred, double mjd, doubl
 	if (pmode == 1)
 	{
 		phase = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
-		phaseShift = (2.0*M_PI)*(phase - floor(phase));
+		phaseShift = -(2.0*M_PI)*(phase - floor(phase));
 		//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
 	
 		//phaseShift = -(2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
