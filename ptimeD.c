@@ -39,11 +39,11 @@ int main (int argc, char *argv[])
 		else if (strcmp(argv[i],"-e") == 0)
 		{
 			strcpy(ext,argv[++i]);
-			mode = 1;  // creat new file
+			mode = 1;  // creat new file with new extension
 		}
 		else if (strcmp(argv[i],"-p") == 0)  // using predictor
 		{
-			pmode = 1;  // creat new file
+			pmode = 1;  // use predictor
 		}
 	}
 
