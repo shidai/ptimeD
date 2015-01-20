@@ -587,21 +587,27 @@ int errInvCov (double c00, double c11, double c01, double *err0, double *err1)
 	return 0;
 }
 
-double phaseShiftDM (double dm, double freq, T2Predictor pred, double mjd, double freqRef, double psrFreq)
+double phaseShiftDM (double dm, double freq, T2Predictor pred, double mjd, double freqRef, double psrFreq, int pmode)
 {
 	double phase;
 	double phaseShift;
 		
-	//phase = (2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
-	//phaseShift = phase - floor(phase);
-	//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	if (pmode == 1)
+	{
+		phase = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+		phaseShift = (2.0*M_PI)*(phase - floor(phase));
+		//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
 	
-	//phaseShift = -(2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
-	//printf ("%lf %lf\n", freq, phaseShift);
-	
-	phase = T2Predictor_GetPhase(&pred, mjd, freq);
-	phaseShift = (2.0*M_PI)*(phase - floor(phase));
-	//phaseShift = -T2Predictor_GetPhase(&pred, mjd, freq);
+		//phaseShift = -(2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+		//printf ("%lf %lf\n", freq, phaseShift);
+	}
+	else 
+	{
+		phase = T2Predictor_GetPhase(&pred, mjd, freq);
+		phaseShift = (2.0*M_PI)*(phase - floor(phase));
+		//phaseShift = -T2Predictor_GetPhase(&pred, mjd, freq);
+	}
+
 	printf ("Predictor: %lf %lf %lf\n", freq, mjd, phase);
 
 	return phaseShift;

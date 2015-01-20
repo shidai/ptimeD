@@ -21,7 +21,7 @@ int main (int argc, char *argv[])
 	char ext0[]="D";   // default extension of new data file
 	int nstokes;
 	int mode = 0;  // default: creat new file ".D"
-	int pmode = 0;  // default: not use predictor
+	int pmode = 0;  // default: use predictor
 
 	int index, n;
 	for (i=0;i<argc;i++)
@@ -41,9 +41,9 @@ int main (int argc, char *argv[])
 			strcpy(ext,argv[++i]);
 			mode = 1;  // creat new file with new extension
 		}
-		else if (strcmp(argv[i],"-p") == 0)  // using predictor
+		else if (strcmp(argv[i],"-np") == 0)  // not use predictor
 		{
-			pmode = 1;  // use predictor
+			pmode = 1;  
 		}
 	}
 
@@ -80,8 +80,13 @@ int main (int argc, char *argv[])
 		printf ("DM0: %.4lf\n", dm);
 	
 		T2Predictor_Init(&pred);
-		T2Predictor_ReadFits(&pred, fname);
-		//T2Predictor_Read(&pred,(char *)"t2pred.dat");
+		  
+		int ret;
+		if (ret=T2Predictor_ReadFits(&pred,fname))
+		{
+			printf("Error: unable to read predictor\n");
+			exit(1);
+		}
 
 		long int imjd, smjd;
 		double offs, mjd, subint_offs;
@@ -90,16 +95,6 @@ int main (int argc, char *argv[])
 		offs = stt_offs(fname);
 
 		double psrfreq;
-		if (pmode == 0)
-		{
-			psrfreq = read_psrfreq(fname);
-			//printf ("psrfreq: %.15lf\n", psrfreq);
-		}
-		else
-		{
-			psrfreq = T2Predictor_GetFrequency(&pred,mjd,cfreq);
-			//printf ("Predicted period: %.10lf\n", 1.0/psrfreq);
-		}
 
 		////////////////////////////////////////////////
 		int nphase;
@@ -135,6 +130,8 @@ int main (int argc, char *argv[])
 			subint_offs = read_offs(fname, h);
 			mjd = imjd + (smjd + offs + subint_offs)/86400.0L;
 			//printf ("mjd: %lf\n", mjd);
+			
+			psrfreq = T2Predictor_GetFrequency(&pred,mjd,cfreq);
 		
 			// read profiles from data file
 			read_prof(fname,h,p_multi,nphase);
@@ -157,7 +154,7 @@ int main (int argc, char *argv[])
 				}
 
 				// dedisperse
-				phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq);
+				phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq, pmode);
 				deDM (nphase, npol, p_temp, phaseShift, p_temp_deDM);
 
 				n = 0;
