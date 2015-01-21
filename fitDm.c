@@ -613,3 +613,36 @@ double phaseShiftDM (double dm, double freq, T2Predictor pred, double mjd, doubl
 	return phaseShift;
 }
 
+double phaseShiftDMfreqSSB (double freqSSB, double dm, double freqRefSSB, double psrFreq)
+{
+	double phase;
+	double phaseShift;
+		
+	phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB)-1.0/(freqRefSSB*freqRefSSB));
+	phaseShift = -(2.0*M_PI)*(phase - floor(phase));
+	//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	
+	//phaseShift = -(2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	//printf ("%lf %lf\n", freq, phaseShift);
+
+	printf ("Predictor: %lf %lf\n", freqSSB, phase);
+
+	return phaseShift;
+}
+
+double phaseShiftDMtdis (double tdis)
+{
+	double phase;
+	double phaseShift;
+		
+	phase = tdis;
+	phaseShift = -(2.0*M_PI)*(phase - floor(phase));
+	//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	
+	//phaseShift = -(2.0*M_PI)*(K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
+	//printf ("%lf %lf\n", freq, phaseShift);
+
+	printf ("Predictor: %lf %lf\n", tdis, phase);
+
+	return phaseShift;
+}

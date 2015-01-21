@@ -12,7 +12,7 @@
 
 int main (int argc, char *argv[])
 {
-	int h,i,j,k;
+	int h,i,j,k,m;
 
 	//////////////////////////////////////////////////////
 	char inName[128];   // name of input data file
@@ -23,14 +23,19 @@ int main (int argc, char *argv[])
 	int mode = 0;  // default: creat new file ".D"
 	int pmode = 0;  // default: use predictor
 
+	char freqSSBName[128];   // name of freqSSB file
+	int freqSSBMode = 0;  // default: no freqSSB read
+	char tdisName[128];   // name of tdis file
+	int tdisMode = 0;  // default: no tdis read
 	int index, n;
+	int indexFreqSSB, indexTdis;
 	for (i=0;i<argc;i++)
 	{
 		if (strcmp(argv[i],"-f") == 0)
 		{
 			index = i + 1;
 			n = 0;
-			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-np") != 0 )
+			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-np") != 0 && strcmp(argv[index+n],"-tdis") != 0 && strcmp(argv[index+n],"-freqSSB") != 0)
 			{
 				n++;
 			}
@@ -45,24 +50,33 @@ int main (int argc, char *argv[])
 		{
 			pmode = 1;  
 		}
+		else if (strcmp(argv[i],"-freqSSB") == 0)  // not use predictor
+		{
+			freqSSBMode = 1;
+			indexFreqSSB = i + 1;
+		}
+		else if (strcmp(argv[i],"-tdis") == 0)  // not use predictor
+		{
+			tdisMode = 1;
+			indexTdis = i + 1;
+		}
 	}
 
 	T2Predictor pred;
 
 	/////////////////////////////////////////////////////////////////////////////////
 	// start to deal with different data file
-	for (k = index; k < index + n; k++)
+	for (k = 0; k < n; k++)
 	{
 		// get the data file name
+		strcpy(inName,argv[k+index]);
 		if (mode == 0)
 		{
-			strcpy(inName,argv[k]);
 			createNewfile(inName, fname, ext0);
 			printf ("%s\n", fname);
 		}
 		else
 		{
-			strcpy(inName,argv[k]);
 			createNewfile(inName, fname, ext);
 			printf ("%s\n", fname);
 		}
@@ -110,6 +124,50 @@ int main (int argc, char *argv[])
 		//printf ("%d\n", nchn);
 		////////////////////////////////////////////////
 
+		double freqSSB[nchn];
+		double freqRefSSB;
+		double tdis[nchn];
+		FILE *fp;
+
+		if (freqSSBMode == 1)
+		{
+			strcpy(freqSSBName,argv[k+indexFreqSSB]);
+  
+			if ((fp = fopen(freqSSBName, "r")) == NULL)
+		  {
+				fprintf (stdout, "Can't open file\n");
+				exit(1);
+			}
+
+			m = 0;
+			while (fscanf(fp, "%lf %lf", &freqSSB[m], &freqRefSSB) == 1)
+			{
+				m++;
+			}
+			  
+			if (fclose (fp) != 0)
+				fprintf (stderr, "Error closing\n");
+		}
+		else if (tdisMode == 1)
+		{
+			strcpy(tdisName,argv[k+indexTdis]);
+
+			if ((fp = fopen(tdisName, "r")) == NULL)
+		  {
+				fprintf (stdout, "Can't open file\n");
+				exit(1);
+			}
+
+			m = 0;
+			while (fscanf(fp, "%lf", &tdis[m]) == 1)
+			{
+				m++;
+			}
+			  
+			if (fclose (fp) != 0)
+				fprintf (stderr, "Error closing\n");
+		}
+
 		////////////////////////////////////////////////////////////////////////////////
 
 		double *p_multi, *p_multi_deDM;
@@ -154,7 +212,19 @@ int main (int argc, char *argv[])
 				}
 
 				// dedisperse
-				phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq, pmode);
+				if (freqSSBMode == 1)
+				{
+					phaseShiftDMfreqSSB (freqSSB[i], dm, freqRefSSB, psrfreq);
+				}
+				else if (tdisMode == 1)
+				{
+					phaseShiftDMtdis (tdis[i]);
+				}
+				else
+				{
+					phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq, pmode);
+				}
+
 				deDM (nphase, npol, p_temp, phaseShift, p_temp_deDM);
 
 				n = 0;
