@@ -126,12 +126,13 @@ int main (int argc, char *argv[])
 
 		double freqSSB[nchn];
 		double freqRefSSB;
-		double tdis[nchn];
+		double tdis1[nchn],tdis2[nchn],shapiro[nchn];
 		FILE *fp;
 
 		if (freqSSBMode == 1)
 		{
 			strcpy(freqSSBName,argv[k+indexFreqSSB]);
+			printf ("%s\n", freqSSBName);
   
 			if ((fp = fopen(freqSSBName, "r")) == NULL)
 		  {
@@ -140,8 +141,9 @@ int main (int argc, char *argv[])
 			}
 
 			m = 0;
-			while (fscanf(fp, "%lf %lf", &freqSSB[m], &freqRefSSB) == 1)
+			while (fscanf(fp, "%lf %lf", &freqSSB[m], &freqRefSSB) == 2)
 			{
+				//printf ("%lf\n", freqSSB[m]);
 				m++;
 			}
 			  
@@ -151,6 +153,7 @@ int main (int argc, char *argv[])
 		else if (tdisMode == 1)
 		{
 			strcpy(tdisName,argv[k+indexTdis]);
+			printf ("%s\n", tdisName);
 
 			if ((fp = fopen(tdisName, "r")) == NULL)
 		  {
@@ -159,8 +162,9 @@ int main (int argc, char *argv[])
 			}
 
 			m = 0;
-			while (fscanf(fp, "%lf", &tdis[m]) == 1)
+			while (fscanf(fp, "%lf %lf %lf", &tdis1[m],&tdis2[m],&shapiro[m]) == 3)
 			{
+				//printf ("%lf\n", tdis[m]);
 				m++;
 			}
 			  
@@ -200,6 +204,7 @@ int main (int argc, char *argv[])
 			// start to derive toas for different channels
 			for (i = 0; i < nchn; i++)
 			{
+				//printf ("Chn%d\n", i);
 				n = 0;
 				for (nstokes = 0; nstokes < npol; nstokes++)
 				{
@@ -214,14 +219,17 @@ int main (int argc, char *argv[])
 				// dedisperse
 				if (freqSSBMode == 1)
 				{
-					phaseShiftDMfreqSSB (freqSSB[i], dm, freqRefSSB, psrfreq);
+					psrfreq = read_psrfreq (fname);
+					phaseShift = phaseShiftDMfreqSSB (freqSSB[i], dm, freqRefSSB, psrfreq);
 				}
 				else if (tdisMode == 1)
 				{
-					phaseShiftDMtdis (tdis[i]);
+					psrfreq = read_psrfreq (fname);
+					phaseShift = phaseShiftDMtdis (tdis1[i], tdis2[i], shapiro[i], psrfreq);
 				}
 				else
 				{
+					//printf ("%lf\n", freq[i]);
 					phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq, pmode);
 				}
 
