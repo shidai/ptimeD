@@ -637,11 +637,11 @@ double phaseShiftDMtdis (double tdis1, double tdis2, double shapiro, double psrF
 {
 	double phase;
 	double phaseShift;
-	//double freqSSB = freqSSB0/1e06;
-	//double freqRefSSB = freqRefSSB0/1e06;
+	double freqSSB = freqSSB0/1e06;
+	double freqRefSSB = freqRefSSB0/1e06;
 		
-	phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB));
-	//phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB))+tdis2*psrFreq;
+	//phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB));
+	phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB))+tdis2*psrFreq;
 	//phase = (tdis1)*psrFreq;
 	//phase = (tdis1+tdis2)*psrFreq;
 	phaseShift = -(2.0*M_PI)*(phase - floor(phase));

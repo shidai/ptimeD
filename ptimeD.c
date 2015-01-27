@@ -162,7 +162,7 @@ int main (int argc, char *argv[])
 			}
 
 			m = 0;
-			while (fscanf(fp, "%lf %lf %lf", &tdis1[m],&tdis2[m],&shapiro[m]) == 3)
+			while (fscanf(fp, "%lf %lf %lf %lf %lf", &freqRefSSB, &tdis1[m],&tdis2[m],&shapiro[m], &freqSSB[m]) == 5)
 			{
 				//printf ("%lf\n", tdis[m]);
 				m++;
