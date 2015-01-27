@@ -620,6 +620,7 @@ double phaseShiftDMfreqSSB (double freqSSB0, double dm, double freqRefSSB0, doub
 	double freqSSB = freqSSB0/1e06;
 	double freqRefSSB = freqRefSSB0/1e06;
 		
+	//phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB));
 	phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB)-1.0/(freqRefSSB*freqRefSSB));
 	phaseShift = -(2.0*M_PI)*(phase - floor(phase));
 	//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
@@ -632,13 +633,17 @@ double phaseShiftDMfreqSSB (double freqSSB0, double dm, double freqRefSSB0, doub
 	return phaseShift;
 }
 
-double phaseShiftDMtdis (double tdis1, double tdis2, double shapiro, double psrFreq)
+double phaseShiftDMtdis (double tdis1, double tdis2, double shapiro, double psrFreq, double freqSSB0, double freqRefSSB0, double dm)
 {
 	double phase;
 	double phaseShift;
+	//double freqSSB = freqSSB0/1e06;
+	//double freqRefSSB = freqRefSSB0/1e06;
 		
+	phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB));
+	//phase = (K*dm*psrFreq)*(1.0/(freqSSB*freqSSB))+tdis2*psrFreq;
 	//phase = (tdis1)*psrFreq;
-	phase = (tdis1+tdis2)*psrFreq;
+	//phase = (tdis1+tdis2)*psrFreq;
 	phaseShift = -(2.0*M_PI)*(phase - floor(phase));
 	//phaseShift = (K*dm*psrFreq)*(1.0/(freq*freq)-1.0/(freqRef*freqRef));
 	

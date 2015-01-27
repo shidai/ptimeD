@@ -225,7 +225,7 @@ int main (int argc, char *argv[])
 				else if (tdisMode == 1)
 				{
 					psrfreq = read_psrfreq (fname);
-					phaseShift = phaseShiftDMtdis (tdis1[i], tdis2[i], shapiro[i], psrfreq);
+					phaseShift = phaseShiftDMtdis (tdis1[i], tdis2[i], shapiro[i], psrfreq, freqSSB[i], freqRefSSB, dm);
 				}
 				else
 				{
