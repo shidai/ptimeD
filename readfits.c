@@ -423,6 +423,53 @@ double read_offs ( char *name, int subint)
   return offs;
 }
 
+double read_batFreq ( char *name, int subint)
+//int main (int argc, char *argv[] )
+{  
+  fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
+  int status;
+  int colnum;
+  long int nrows;
+
+  status = 0;
+
+  if ( fits_open_file(&fptr, name, READONLY, &status) )          // open the file
+  {
+		printf( "error while openning file\n" );
+  }
+
+	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
+    
+	if ( fits_get_num_rows(fptr, &nrows, &status) )           // get the row number
+  {
+      printf( "error while getting the row number\n" );
+  }
+    
+  if ( fits_get_colnum(fptr, CASEINSEN, "BATFREQ", &colnum, &status) )           // get the colnum number
+  {
+      printf( "error while getting the colnum number\n" );
+	}
+
+  int frow;
+  int	felem = 1;
+  int nelem = 1;
+  int null = 0;
+  int	anynull = 0;
+
+  double batFreq;
+
+	frow = subint;
+
+	fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, &batFreq, &anynull, &status);           // read the column
+
+  if ( fits_close_file(fptr, &status) )
+  {
+		printf("batFreq error while closing the file \n");
+  }
+
+  return batFreq;
+}
+
 //int main ( int argc, char *argv[] )
 int read_prof ( char *name, int subint, double *profile, int nphase)
 {  
@@ -1006,12 +1053,13 @@ double read_obsFreqSSB (char *name)
 	return obsFreq;
 }
 
-int modify_freq ( char *name, int subint, double freqRef, int nchan)
+int modify_freq ( char *name, int subint, double freqRef, int nchan, double *freqSSB)
 //int main (int argc, char *argv[] )
 {  
   fitsfile *fptr;       // pointer to the FITS file, defined in fitsio.h 
   int status;
   int colnum;
+	int ncol;
 
   status = 0;
 
@@ -1023,10 +1071,12 @@ int modify_freq ( char *name, int subint, double freqRef, int nchan)
 
 	fits_movnam_hdu(fptr, BINARY_TBL, (char *)"SUBINT",0,&status);
 
-  if ( fits_get_colnum(fptr, CASEINSEN, "DAT_FREQ", &colnum, &status) )           // get the colnum number
+	// get number of column
+	fits_get_num_cols(fptr,&ncol,&status);
+
+  if ( fits_get_colnum(fptr, CASEINSEN, "DAT_FREQ", &colnum, &status) )      
   {
       printf( "error while getting the colnum number\n" );
-	//fits_get_colnum(fptr, CASEINSEN, "DATA", &colnum, &status);
 	}
   //printf ("%d\n", colnum);
 
@@ -1048,23 +1098,25 @@ int modify_freq ( char *name, int subint, double freqRef, int nchan)
 		freq[i] = freqRef;
 	}
 
-  //fits_read_col(fptr, TDOUBLE, colnum, frow, felem, nelem, &null, freq, &anynull, &status);           // read the column
-	fits_write_col(fptr, TDOUBLE, colnum, frow, felem, nelem, freq, &status);           // read the column
+	//fits_write_col(fptr, TDOUBLE, colnum, frow, felem, nelem, freq, &status); 
 
-	//int i;
-    //for (i = 0; i < nchan; i++)                             // print the results
-	//{
-		//puts(line[0]);
-    //    printf("%lf\n", freq[i]);
-		//fprintf (fp, "%s\n", line[0]);
-	//}
+	//////////////////////////////////////////////////////////////////////////////
+	char tform[10];
+	sprintf (tform,"%d",nchan);
+	strcat(tform,"E"); 
+	fits_insert_col(fptr,ncol+1,"FREQ_SSB",tform,&status);
+  if ( fits_get_colnum(fptr, CASEINSEN, "FREQ_SSB", &colnum, &status) )      
+  {
+      printf( "error while getting the colnum number\n" );
+	}
+	fits_write_col(fptr, TDOUBLE, colnum, frow, felem, nelem, freqSSB, &status);
 
-    if ( fits_close_file(fptr, &status) )
-    {
-        printf( " error while closing the file \n" );
-    }
+	if ( fits_close_file(fptr, &status) )
+	{
+		printf( " error while closing the file \n" );
+	}
 
-    return 0;
+	return 0;
 }
 
 int createNewfile (char *input, char *output, char *ext)

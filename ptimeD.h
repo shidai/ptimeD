@@ -46,6 +46,7 @@ int read_prof ( char *name, int subint, double *profile, int phase );
 
 int print_t2pred ( char *name );
 double read_offs ( char *name, int subint);
+double read_batFreq ( char *name, int subint);
 int read_freq ( char *name, int subint, double *freq, int nchan );
 int read_wts ( char *name, int subint, double *wts, int nchan );
 
@@ -146,10 +147,11 @@ int errInvCov (double c00, double c11, double c01, double *err0, double *err1);
 
 int deDM (int nphase, int npol, double *in, double phaseShift, double *out);
 int write_prof (char *name, int subint, double *profile, int nphase);
-double phaseShiftDM (double dm, double freq, T2Predictor pred, double mjd, double freqRef, double psrFreq, int pmode);
+double phaseShiftDM (double dm, double freq, T2Predictor pred, double mjd, double freqRef, double psrFreq);
 double phaseShiftDMfreqSSB (double freqSSB, double dm, double freqRefSSB, double psrFreq);
-double phaseShiftDMtdis (double tdis1, double tdis2, double shapiro, double psrFreq, double freqSSB0, double freqRefSSB0, double dm);
-int modify_freq ( char *name, int subint, double freqRef, int nchan);
+double phaseShiftDMtdis (double tdis1, double tdis2, double psrFreq, double freqSSB0, double dm, double psrFreq0);
+//double phaseShiftDMtdis (double tdis1, double tdis2, double psrFreq);
+int modify_freq ( char *name, int subint, double freqRef, int nchan, double *freqSSB);
 
 int T2Predictor_ReadFits(T2Predictor *t2p, char *fname);
 int T2Predictor_FReadFits(T2Predictor *t2p, fitsfile *f);

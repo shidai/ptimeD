@@ -12,7 +12,7 @@
 
 int main (int argc, char *argv[])
 {
-	int h,i,j,k,m;
+	int h,i,j,k,m,z;
 
 	//////////////////////////////////////////////////////
 	char inName[128];   // name of input data file
@@ -21,21 +21,23 @@ int main (int argc, char *argv[])
 	char ext0[]="D";   // default extension of new data file
 	int nstokes;
 	int mode = 0;  // default: creat new file ".D"
-	int pmode = 0;  // default: use predictor
+	//int pmode = 0;  // default: use predictor
 
-	char freqSSBName[128];   // name of freqSSB file
-	int freqSSBMode = 0;  // default: no freqSSB read
 	char tdisName[128];   // name of tdis file
 	int tdisMode = 0;  // default: no tdis read
 	int index, n;
-	int indexFreqSSB, indexTdis;
+	int indexTdis;
+
+	double DM;
+	int DMstatus = 0; 
+
 	for (i=0;i<argc;i++)
 	{
 		if (strcmp(argv[i],"-f") == 0)
 		{
 			index = i + 1;
 			n = 0;
-			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-np") != 0 && strcmp(argv[index+n],"-tdis") != 0 && strcmp(argv[index+n],"-freqSSB") != 0)
+			while ( (index + n) < argc && strcmp(argv[index+n],"-e") != 0 && strcmp(argv[index+n],"-r") != 0 && strcmp(argv[index+n],"-DM") != 0 && strcmp(argv[index+n],"-tdis") != 0)
 			{
 				n++;
 			}
@@ -46,19 +48,22 @@ int main (int argc, char *argv[])
 			strcpy(ext,argv[++i]);
 			mode = 1;  // creat new file with new extension
 		}
-		else if (strcmp(argv[i],"-np") == 0)  // not use predictor
+		//else if (strcmp(argv[i],"-np") == 0)  // not use predictor
+		//{
+		//	pmode = 1;  
+		//}
+		else if (strcmp(argv[i],"-r") == 0)  // file name of tdis
 		{
-			pmode = 1;  
+			indexTdis = i + 1;
 		}
-		else if (strcmp(argv[i],"-freqSSB") == 0)  // not use predictor
-		{
-			freqSSBMode = 1;
-			indexFreqSSB = i + 1;
-		}
-		else if (strcmp(argv[i],"-tdis") == 0)  // not use predictor
+		else if (strcmp(argv[i],"-tdis") == 0)  // use tdis1 and tdis2
 		{
 			tdisMode = 1;
-			indexTdis = i + 1;
+		}
+		else if (strcmp(argv[i],"-DM") == 0)  // use input DM
+		{
+			DMstatus = 1;
+			DM = atof(argv[++i]);
 		}
 	}
 
@@ -90,7 +95,14 @@ int main (int argc, char *argv[])
 		//freqRef = 1369.0; // MHz
 
 		double dm;
-		dm = readDm(fname);
+		if (DMstatus == 1)
+		{
+			dm = DM;
+		}
+		else
+		{
+			dm = readDm(fname);
+		}
 		printf ("DM0: %.4lf\n", dm);
 	
 		T2Predictor_Init(&pred);
@@ -109,6 +121,9 @@ int main (int argc, char *argv[])
 		offs = stt_offs(fname);
 
 		double psrfreq;
+		double psrfreq0;
+
+		psrfreq0 = read_psrfreq (fname);
 
 		////////////////////////////////////////////////
 		int nphase;
@@ -124,33 +139,9 @@ int main (int argc, char *argv[])
 		//printf ("%d\n", nchn);
 		////////////////////////////////////////////////
 
-		double freqSSB[nchn];
-		double freqRefSSB;
-		double tdis1[nchn],tdis2[nchn],shapiro[nchn];
+		double tdis1[nchn],tdis2[nchn],freqSSB[nchn];
 		FILE *fp;
 
-		if (freqSSBMode == 1)
-		{
-			strcpy(freqSSBName,argv[k+indexFreqSSB]);
-			printf ("%s\n", freqSSBName);
-  
-			if ((fp = fopen(freqSSBName, "r")) == NULL)
-		  {
-				fprintf (stdout, "Can't open file\n");
-				exit(1);
-			}
-
-			m = 0;
-			while (fscanf(fp, "%lf %lf", &freqSSB[m], &freqRefSSB) == 2)
-			{
-				//printf ("%lf\n", freqSSB[m]);
-				m++;
-			}
-			  
-			if (fclose (fp) != 0)
-				fprintf (stderr, "Error closing\n");
-		}
-		else if (tdisMode == 1)
 		{
 			strcpy(tdisName,argv[k+indexTdis]);
 			printf ("%s\n", tdisName);
@@ -162,7 +153,7 @@ int main (int argc, char *argv[])
 			}
 
 			m = 0;
-			while (fscanf(fp, "%lf %lf %lf %lf %lf", &freqRefSSB, &tdis1[m],&tdis2[m],&shapiro[m], &freqSSB[m]) == 5)
+			while (fscanf(fp, "%lf %lf %lf", &tdis1[m],&tdis2[m],&freqSSB[m]) == 3)
 			{
 				//printf ("%lf\n", tdis[m]);
 				m++;
@@ -183,18 +174,21 @@ int main (int argc, char *argv[])
 		p_temp_deDM = (double *)malloc(sizeof(double)*npol*nphase);
 
 		double phaseShift;
+		double phaseShift0;
 
 		double freq[nchn];
-		int n;
+		double batPsrFreq = 208.0;
 		// start to derive toa from different subint
 		for (h = 1; h <= nsub; h++)
 		{
 			subint_offs = read_offs(fname, h);
+			batPsrFreq = read_batFreq(fname, h);
 			mjd = imjd + (smjd + offs + subint_offs)/86400.0L;
 			//printf ("mjd: %lf\n", mjd);
 			
 			psrfreq = T2Predictor_GetFrequency(&pred,mjd,cfreq);
 		
+			printf ("psr freq %.10lf %.10lf\n", batPsrFreq, psrfreq);
 			// read profiles from data file
 			read_prof(fname,h,p_multi,nphase);
 			read_freq(fname,h,freq,nchn);
@@ -204,56 +198,54 @@ int main (int argc, char *argv[])
 			// start to derive toas for different channels
 			for (i = 0; i < nchn; i++)
 			{
+				//psrfreq = T2Predictor_GetFrequency(&pred,mjd,freq[i]);
+				phaseShift0 = 2.0*M_PI*(T2Predictor_GetPhase(&pred,mjd,freq[i])-floor(T2Predictor_GetPhase(&pred,mjd,freq[i])));
 				//printf ("Chn%d\n", i);
-				n = 0;
+				z = 0;
 				for (nstokes = 0; nstokes < npol; nstokes++)
 				{
 					for (j = 0; j < nphase; j++)
 					{
-						p_temp[n] = p_multi[nstokes*nchn*nphase + i*nphase + j];
+						p_temp[z] = p_multi[nstokes*nchn*nphase + i*nphase + j];
 						//printf ("%d %lf\n", n, p_temp[n]);
-						n++;
+						z++;
 					}
 				}
 
 				// dedisperse
-				if (freqSSBMode == 1)
+				if (tdisMode == 1)
 				{
-					psrfreq = read_psrfreq (fname);
-					phaseShift = phaseShiftDMfreqSSB (freqSSB[i], dm, freqRefSSB, psrfreq);
-				}
-				else if (tdisMode == 1)
-				{
-					psrfreq = read_psrfreq (fname);
-					phaseShift = phaseShiftDMtdis (tdis1[i], tdis2[i], shapiro[i], psrfreq, freqSSB[i], freqRefSSB, dm);
+					phaseShift = phaseShiftDMtdis (tdis1[i], tdis2[i], psrfreq, freqSSB[i], dm, batPsrFreq);
+					//phaseShift = phaseShiftDMtdis (tdis1[i], tdis2[i], psrfreq, freqSSB[i], dm, psrfreq0);
 				}
 				else
 				{
 					//printf ("%lf\n", freq[i]);
-					phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq, pmode);
+					phaseShift = phaseShiftDM (dm, freq[i], pred, mjd, freqRef, psrfreq);
 				}
 
+				//printf ("phase shift %.10lf %.10lf\n", phaseShift0, phaseShift);
 				deDM (nphase, npol, p_temp, phaseShift, p_temp_deDM);
 
-				n = 0;
 				for (nstokes = 0; nstokes < npol; nstokes++)
 				{
 					for (j = 0; j < nphase; j++)
 					{
 						p_multi_deDM[nstokes*nchn*nphase + i*nphase + j] = p_temp_deDM[j];
 						//printf ("%d %lf\n", j, p_temp_deDM[j]);
-						n++;
 					}
 				}
 			}
 			write_prof (fname, h, p_multi_deDM, nphase);
-			//modify_freq (fname, h, freqRef, nchn);
+			modify_freq (fname, h, freqRef, nchn, freqSSB);
 		}
 
 		free(p_multi);
 		free(p_multi_deDM);
 		free(p_temp);
 		free(p_temp_deDM);
+
+		T2Predictor_Destroy(&pred);
 	}
 
 	return 0;
